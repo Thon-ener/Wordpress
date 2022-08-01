@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+    www:
+        #tty: true
+        build: .
+        ports:
+            - "8001:80"
+        volumes:
+            - ./wordpress:/var/www/html/wordpress
+            - ./www:/var/www/html
+        #environment:
+        #    WORDPRESS_DB_HOST: testdb
+        #    WORDPRESS_DB_PASSWORD: 123456
+        #    WORDPRESS_DB_NAME: db_wordpress
+        links:
+            - db
+        networks:
+            - default
+        
+    db:
+        image: mysql:5
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: myDb
+            MYSQL_USER: user
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
+        volumes:
+            - ./data:/var/lib/mysql
+        networks:
+            - default
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        links:
+            - db:db
+        ports:
+            - 8000:80
+        environment:
+            MYSQL_USER: user
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: test
